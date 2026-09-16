@@ -165,6 +165,22 @@ body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; backgrou
 .deadline-urgent { background: #FCEBEB; color: #A32D2D; }
 .deadline-soon { background: #FAEEDA; color: #633806; }
 .deadline-ok { background: #E1F5EE; color: #085041; }
+.n-cmt-wrap { margin-top:12px; padding-top:10px; border-top:0.5px solid #f1efe8; }
+.n-cmt-toggle { font-size:12px; color:#534AB7; cursor:pointer; background:none; border:none; font-family:inherit; padding:0; font-weight:500; display:flex; align-items:center; gap:4px; }
+.n-cmt-count { font-size:11px; background:#EEEDFE; color:#3C3489; padding:1px 7px; border-radius:20px; }
+.n-cmt-box { display:none; margin-top:10px; }
+.n-cmt-box.open { display:block; }
+.n-cmt-list { background:#f7f7f5; border-radius:8px; padding:4px 12px; }
+.n-cmt-item { display:flex; gap:10px; align-items:center; padding:8px 0; border-bottom:0.5px solid #ebe9e2; }
+.n-cmt-item:last-child { border-bottom:none; }
+.n-cmt-num { font-size:11px; color:#888780; min-width:16px; }
+.n-cmt-who { font-size:12.5px; font-weight:500; color:#2c2c2a; min-width:48px; }
+.n-cmt-text { font-size:12.5px; color:#444441; flex:1; }
+.n-cmt-time { font-size:10px; color:#b4b2a9; white-space:nowrap; }
+.n-cmt-write { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+.n-cmt-write input { border:0.5px solid #d3d1c7; border-radius:6px; padding:7px 10px; font-size:12px; font-family:inherit; outline:none; background:#fff; }
+.n-cmt-write input:focus { border-color:#534AB7; }
+.n-cmt-btn { background:#534AB7; color:#fff; border:none; border-radius:6px; padding:7px 16px; font-size:12px; font-family:inherit; cursor:pointer; }
 .notice-toggle { font-size: 13px; color: #534AB7; cursor: pointer; text-align: right; margin-bottom: 8px; }
 
 /* 제출 현황 */
@@ -870,6 +886,7 @@ body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; backgrou
         <input class="notice-dept-input" id="n-dept" placeholder="등록 부서">
         <label style="font-size:12px;color:#888780;display:flex;align-items:center;gap:4px;">마감일 <input class="notice-date-input" id="n-deadline" type="date"></label>
         <label style="font-size:12px;color:#534AB7;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="n-pin"> 상단 고정</label>
+        <label style="font-size:12px;color:#028090;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="n-cmt" checked> 댓글 신청 받기</label>
       </div>
       <button class="btn-notice-post" onclick="postNotice()">등록</button>
     </div>
@@ -893,8 +910,20 @@ body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; backgrou
 수량: 60박스 선착순
 배부일시: 6/8(월) 15시 군청 민원실 앞
 
-신청: 성함·연락처·수량을 메일로 6/8(월) 오전 9시 30분까지</div>
+신청: 아래 댓글에 성함 · 부서 · 수량 남겨주세요 (6/8(월) 09:30까지, 선착순)</div>
       <div class="notice-deadline deadline-urgent">⏰ D-3 · 마감 6/8</div>
+      <div class="n-cmt-wrap">
+        <button class="n-cmt-toggle" onclick="toggleNCmt(this)">💬 댓글 <span class="n-cmt-count">3</span></button>
+        <div class="n-cmt-box open">
+          <div class="n-cmt-list"><div class="n-cmt-item"><span class="n-cmt-num">1</span><span class="n-cmt-who">권지영</span><span class="n-cmt-text">민원과 · 2박스 주문</span><span class="n-cmt-time">26. 6. 5.  09:02</span></div><div class="n-cmt-item"><span class="n-cmt-num">2</span><span class="n-cmt-who">신승이</span><span class="n-cmt-text">총무과 · 1박스 주문</span><span class="n-cmt-time">26. 6. 5.  09:05</span></div><div class="n-cmt-item"><span class="n-cmt-num">3</span><span class="n-cmt-who">배혜진</span><span class="n-cmt-text">기획예산과 · 1박스 주문</span><span class="n-cmt-time">26. 6. 5.  09:11</span></div></div>
+          <div class="n-cmt-write">
+            <input placeholder="성함" style="width:80px;">
+            <input placeholder="부서" style="width:90px;">
+            <input placeholder="내용" style="flex:1;min-width:140px;">
+            <button class="n-cmt-btn" onclick="addNCmt(this)">신청</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="notice-card" data-cat="행사·공연">
       <div class="notice-card-header"><span class="notice-cat-badge" style="background:#FAEEDA;color:#633806;">🎉 행사·공연</span><span class="notice-dept-badge">민원과 권지영</span><span class="notice-date-badge">2일 전</span></div>
@@ -904,6 +933,18 @@ body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; backgrou
 기간: 6월 한 달간
 방법: 직원증 지참 후 현장 구매</div>
       <div class="notice-deadline deadline-soon">⏰ D-21 · 마감 6/30</div>
+      <div class="n-cmt-wrap">
+        <button class="n-cmt-toggle" onclick="toggleNCmt(this)">💬 댓글 <span class="n-cmt-count">0</span></button>
+        <div class="n-cmt-box">
+          <div class="n-cmt-list"></div>
+          <div class="n-cmt-write">
+            <input placeholder="성함" style="width:80px;">
+            <input placeholder="부서" style="width:90px;">
+            <input placeholder="내용" style="flex:1;min-width:140px;">
+            <button class="n-cmt-btn" onclick="addNCmt(this)">신청</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="notice-card" data-cat="복지혜택">
       <div class="notice-card-header"><span class="notice-cat-badge" style="background:#EEEDFE;color:#3C3489;">💙 복지혜택</span><span class="notice-dept-badge">총무과 신승이</span><span class="notice-date-badge">3일 전</span></div>
@@ -912,7 +953,7 @@ body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; backgrou
 대상: 만 40세 이상 직원 및 신청자
 신청기간: 6/1~6/20
 검진기간: 7월~8월 중
-신청방법: 총무과 내선 ○○○으로 연락</div>
+신청방법: 총무과 내선 6084로 연락</div>
       <div class="notice-deadline deadline-ok">⏰ D-15 · 마감 6/20</div>
     </div>
     <div class="notice-card" data-cat="군정소식">
@@ -1021,6 +1062,23 @@ function showMain(id) {
 function toggleForm(id) {
   const el = document.getElementById(id);
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function newCmtBlock() {
+  return `<div class="n-cmt-wrap"><button class="n-cmt-toggle" onclick="toggleNCmt(this)">💬 댓글 <span class="n-cmt-count">0</span></button><div class="n-cmt-box"><div class="n-cmt-list"></div><div class="n-cmt-write"><input placeholder="성함" style="width:80px;"><input placeholder="부서" style="width:90px;"><input placeholder="내용" style="flex:1;min-width:140px;"><button class="n-cmt-btn" onclick="addNCmt(this)">신청</button></div></div></div>`;
+}
+function toggleNCmt(btn) { btn.nextElementSibling.classList.toggle('open'); }
+function addNCmt(btn) {
+  const wrap = btn.closest('.n-cmt-wrap');
+  const inputs = wrap.querySelectorAll('.n-cmt-write input');
+  const name = inputs[0].value.trim(), dept = inputs[1].value.trim(), text = inputs[2].value.trim();
+  if (!name || !text) { alert('성함과 내용을 입력해주세요.'); return; }
+  const list = wrap.querySelector('.n-cmt-list');
+  const n = list.children.length + 1;
+  const now = new Date(); const tm = String(now.getFullYear()).slice(2)+'. '+(now.getMonth()+1)+'. '+now.getDate()+'.  '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  list.insertAdjacentHTML('beforeend', `<div class="n-cmt-item"><span class="n-cmt-num">${n}</span><span class="n-cmt-who">${name}</span><span class="n-cmt-text">${dept ? dept+' · ' : ''}${text}</span><span class="n-cmt-time">${tm}</span></div>`);
+  wrap.querySelector('.n-cmt-count').textContent = n;
+  inputs.forEach(i => i.value = '');
 }
 function toggleNoticeForm() {
   const el = document.getElementById('notice-form');
@@ -1484,11 +1542,12 @@ function postNotice() {
   const card = document.createElement('div');
   card.className = 'notice-card'+(pinned?' pinned':'');
   card.dataset.cat = cat;
-  card.innerHTML = `<div class="notice-card-header"><span class="notice-cat-badge" style="${catColors[cat]}">${catEmoji[cat]} ${cat}</span>${pinned?'<span class="notice-pin-badge">📌 고정</span>':''}<span class="notice-dept-badge">${dept}</span><span class="notice-date-badge">방금</span></div><div class="notice-title">${title}</div><div class="notice-content">${content}</div>${deadlineHtml}`;
+  card.innerHTML = `<div class="notice-card-header"><span class="notice-cat-badge" style="${catColors[cat]}">${catEmoji[cat]} ${cat}</span>${pinned?'<span class="notice-pin-badge">📌 고정</span>':''}<span class="notice-dept-badge">${dept}</span><span class="notice-date-badge">방금</span></div><div class="notice-title">${title}</div><div class="notice-content">${content}</div>${deadlineHtml}${document.getElementById('n-cmt').checked ? newCmtBlock() : ''}`;
   const list = document.getElementById('notice-list');
   if (pinned) list.insertAdjacentElement('afterbegin', card); else list.insertAdjacentElement('afterbegin', card);
   ['n-title','n-content','n-dept','n-deadline'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('n-pin').checked = false;
+  document.getElementById('n-cmt').checked = true;
   document.getElementById('notice-form').style.display = 'none';
 }
 function filterNotice(el, cat) {
